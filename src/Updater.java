@@ -1,5 +1,4 @@
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -33,12 +32,12 @@ public class Updater {
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		while ((columns = reader.readNext()) != null) {
-			String response = callAPI(cpApiUrl + "?query=" + columns[0].replace("\s", "+"), null, "GET");
+			String response = callAPI(cpApiUrl + "?query=" + getParamValue(columns[0]), null, "GET");
 			List<HashMap<String, Object>> cps = objectMapper.readValue(response,
 					new TypeReference<List<HashMap<String, Object>>>() {
 			});
 			Map<String, Object> cp = cps.get(0);
-
+			
 			// Adding email of principal Investigator
 			Map<String, Object> principalInvestigator = new HashMap<String, Object>();
 			principalInvestigator.put("emailAddress", columns[1]);
@@ -95,5 +94,17 @@ public class Updater {
 			e.printStackTrace();
 			return "[]";
 		}
+	}
+	
+	public static String getParamValue(String param) {
+		char[] tempParam = param.toCharArray();
+		
+		for(int i = 0; i < tempParam.length; i++) {
+			if(tempParam[i] == ' ') {
+				tempParam[i] = '+';
+			} 
+		}
+	
+		return new String(tempParam).replace("\"", "%22").replace("\'", "%27");
 	}
 }
