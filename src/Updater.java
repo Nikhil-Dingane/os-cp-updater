@@ -21,20 +21,9 @@ public class Updater {
 
 	public static void main(String[] args) throws IOException, CsvException {
 		
-		if(args.length < 4) {
-			System.out.println("Enter parameters are less than entered number of paramteres.");
-			System.exit(0);
-		}
-		
 		String cpApiUrl = args[0];
 		String usernamePassword = args[1] + ":" + args[2];
 		String fileName = args[3];
-		
-		File file = new File(fileName);
-		if(!file.exists()) {
-			System.out.println("Entered file is not valid.");
-			System.exit(0);
-		}
 		
 		basicUrlAuthentication = "Basic " + Base64.getEncoder().encodeToString(usernamePassword.getBytes());		
 		
@@ -74,10 +63,7 @@ public class Updater {
 			String id = cp.get("id").toString();
 			String payload = objectMapper.writeValueAsString(cp);
 
-			System.out.println(payload);
 			response = callAPI(cpApiUrl + "/" + id, payload, "PUT");
-			System.out.println(response);
-
 		}
 
 	}
