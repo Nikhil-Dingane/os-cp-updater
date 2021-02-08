@@ -36,6 +36,12 @@ public class Updater {
 			List<HashMap<String, Object>> cps = objectMapper.readValue(response,
 					new TypeReference<List<HashMap<String, Object>>>() {
 			});
+			
+			if(cps.size() == 0) {
+				System.out.println("Did not get get CP: " + columns[0]);
+				continue;
+			}
+			
 			Map<String, Object> cp = cps.get(0);
 			
 			// Adding email of principal Investigator

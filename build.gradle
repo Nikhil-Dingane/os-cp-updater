@@ -1,0 +1,30 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+jar {
+  baseName = 'os-cp-updater'
+  version = '7.1.0'
+}
+
+repositories {
+  mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+test {
+  useTestNG() {
+    suites 'src/test/resources/testng.xml'
+    useDefaultListeners = true
+    outputDirectory = file("$projectDir/output")
+  }
+
+  testLogging.showStandardStreams = true
+}
+
+dependencies {
+  compile group: 'com.opencsv', name: 'opencsv', version: '5.3'
+  compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.0'
+}
