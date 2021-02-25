@@ -33,6 +33,7 @@ public class Updater {
 
 		while ((columns = reader.readNext()) != null) {
 			String response = callAPI(cpApiUrl + "?query=" + getParamValue(columns[0]), null, "GET");
+			
 			List<HashMap<String, Object>> cps = objectMapper.readValue(response,
 					new TypeReference<List<HashMap<String, Object>>>() {
 			});
@@ -42,7 +43,12 @@ public class Updater {
 				continue;
 			}
 			
-			Map<String, Object> cp = cps.get(0);
+			Integer requiredCpId = (Integer)cps.get(0).get("id");
+			response = callAPI(cpApiUrl + "/" + requiredCpId, null, "GET");
+			
+			
+			Map<String, Object> cp = objectMapper.readValue(response, new TypeReference<HashMap<String, Object>>() {
+			});
 			
 			// Adding email of principal Investigator
 			Map<String, Object> principalInvestigator = new HashMap<String, Object>();
