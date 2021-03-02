@@ -32,45 +32,33 @@ public class Updater {
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		while ((columns = reader.readNext()) != null) {
-			String response = callAPI(cpApiUrl + "?query=" + getParamValue(columns[0]), null, "GET");
-			
-			List<HashMap<String, Object>> cps = objectMapper.readValue(response,
-					new TypeReference<List<HashMap<String, Object>>>() {
+			Integer cpId = Integer.valueOf(columns[0]);			
+			String response = callAPI(cpApiUrl + "/" + cpId, null, "GET");		
+			Map<String, Object> cp = objectMapper.readValue(response, new TypeReference<HashMap<String, Object>>() {
 			});
+			List<Map<String, Object>> coordinatorsList = (List<Map<String, Object>>) cp.get("coordinators");
+			Map<String, Object> coordinator = null;
 			
-			if(cps.size() == 0) {
-				System.out.println("Did not get get CP: " + columns[0]);
+			boolean coordinatorAlreadyExist = false;
+			
+			for(int i = 0; i < coordinatorsList.size(); i++) {
+				Integer coordinatorId = (Integer)coordinatorsList.get(i).get("id");
+				
+				if(Integer.valueOf(columns[1]) == coordinatorId) {
+					coordinatorAlreadyExist = true;
+					break;
+				}
+			}
+			
+			if(coordinatorAlreadyExist) {
 				continue;
 			}
 			
-			Integer requiredCpId = (Integer)cps.get(0).get("id");
-			response = callAPI(cpApiUrl + "/" + requiredCpId, null, "GET");
+			coordinator = new HashMap<String, Object>();
+			coordinator.put("id", Integer.valueOf(columns[1]));
+			coordinatorsList.add(coordinator);
+			cp.put("coordinators", coordinatorsList);
 			
-			
-			Map<String, Object> cp = objectMapper.readValue(response, new TypeReference<HashMap<String, Object>>() {
-			});
-			
-			// Adding email of principal Investigator
-			Map<String, Object> principalInvestigator = new HashMap<String, Object>();
-			principalInvestigator.put("emailAddress", columns[1]);
-			cp.put("principalInvestigator", principalInvestigator);
-
-			// Adding sites to the CP
-			List<Map<String, Object>> sites = new ArrayList<Map<String, Object>>();
-
-			// First column will be CP title and second will be PI's email. It will take all
-			// column values onwards third column as site name.
-			// Because a CP can have multiple sites.
-			for (int i = 2; i < columns.length; i++) {
-				// Checking if site is null
-				if (columns[i].length() > 0) {
-					Map<String, Object> site = new HashMap<String, Object>();
-					site.put("siteName", columns[i]);
-					sites.add(site);
-				}
-			}
-
-			cp.put("cpSites", sites);
 			String id = cp.get("id").toString();
 			String payload = objectMapper.writeValueAsString(cp);
 
@@ -106,17 +94,5 @@ public class Updater {
 			e.printStackTrace();
 			return "[]";
 		}
-	}
-	
-	public static String getParamValue(String param) {
-		char[] tempParam = param.toCharArray();
-		
-		for(int i = 0; i < tempParam.length; i++) {
-			if(tempParam[i] == ' ') {
-				tempParam[i] = '+';
-			} 
-		}
-	
-		return new String(tempParam).replace("\"", "%22").replace("\'", "%27");
 	}
 }

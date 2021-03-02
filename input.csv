@@ -1,7 +1,10 @@
-CP Short title,Updated PI,site[0],Site[1]
-T C P,"Akash.Patel@bcm.edu
-",Aarhus University Skejby,BCM Human Genome Sequencing Center
-TCP1,"Akash.Patel@bcm.edu
-",Aarhus University Skejby,BCM Human Genome Sequencing Center
-TCP2,"aflegarr@texaschildrens.org
-","ABBR R500 Storage Corridor, Baylor College of Medicine",Ben Taub General Hospital
+COLLECTION_PROTOCOL_ID,USER_ID
+1,2
+3,2
+4,2
+1,5
+3,5
+4,5
+1,6
+3,6
+4,6
