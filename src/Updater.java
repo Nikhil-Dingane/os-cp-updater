@@ -39,12 +39,7 @@ public class Updater {
 			Map<String, Object> cp = objectMapper.readValue(response, new TypeReference<HashMap<String, Object>>() {
 			});
 			
-			if((cp.get("shortTitle").equals(columns[1])) ) {
-				cp.put("irbId", columns[2]);
-			} else {
-				System.err.println("Collection protocol id and short title does not match: \n" + "id: " + cpId + "\nCP Short title: " + columns[1]);
-				continue;
-			}
+			cp.put("irbId", columns[2]);
 			
 			String id = cp.get("id").toString();
 			String payload = objectMapper.writeValueAsString(cp);
