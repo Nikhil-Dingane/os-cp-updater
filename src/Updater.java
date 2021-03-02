@@ -36,6 +36,11 @@ public class Updater {
 			Integer cpId = Integer.valueOf(columns[0]);
 			String response = callAPI(cpApiUrl + "/" + cpId, null, "GET");
 			
+			if(response.equals("[]")) {
+				System.out.print("Unable to find CP with id: " + cpId);
+				continue;
+			}
+			
 			Map<String, Object> cp = objectMapper.readValue(response, new TypeReference<HashMap<String, Object>>() {
 			});
 			
