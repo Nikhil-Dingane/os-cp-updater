@@ -1,7 +1,4 @@
-CP Short title,Updated PI,site[0],Site[1]
-T C P,"Akash.Patel@bcm.edu
-",Aarhus University Skejby,BCM Human Genome Sequencing Center
-TCP1,"Akash.Patel@bcm.edu
-",Aarhus University Skejby,BCM Human Genome Sequencing Center
-TCP2,"aflegarr@texaschildrens.org
-","ABBR R500 Storage Corridor, Baylor College of Medicine",Ben Taub General Hospital
+IDENTIFIER,SHORT_TITLE,IRB_IDENTIFIER
+1,TCP,H-23223
+3,TCP2,H-23224
+4,TCP3,H-23225

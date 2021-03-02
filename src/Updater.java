@@ -32,49 +32,26 @@ public class Updater {
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		while ((columns = reader.readNext()) != null) {
-			String response = callAPI(cpApiUrl + "?query=" + getParamValue(columns[0]), null, "GET");
 			
-			List<HashMap<String, Object>> cps = objectMapper.readValue(response,
-					new TypeReference<List<HashMap<String, Object>>>() {
-			});
-			
-			if(cps.size() == 0) {
-				System.out.println("Did not get get CP: " + columns[0]);
-				continue;
-			}
-			
-			Integer requiredCpId = (Integer)cps.get(0).get("id");
-			response = callAPI(cpApiUrl + "/" + requiredCpId, null, "GET");
-			
+			Integer cpId = Integer.valueOf(columns[0]);
+			String response = callAPI(cpApiUrl + "/" + cpId, null, "GET");
 			
 			Map<String, Object> cp = objectMapper.readValue(response, new TypeReference<HashMap<String, Object>>() {
 			});
 			
-			// Adding email of principal Investigator
-			Map<String, Object> principalInvestigator = new HashMap<String, Object>();
-			principalInvestigator.put("emailAddress", columns[1]);
-			cp.put("principalInvestigator", principalInvestigator);
-
-			// Adding sites to the CP
-			List<Map<String, Object>> sites = new ArrayList<Map<String, Object>>();
-
-			// First column will be CP title and second will be PI's email. It will take all
-			// column values onwards third column as site name.
-			// Because a CP can have multiple sites.
-			for (int i = 2; i < columns.length; i++) {
-				// Checking if site is null
-				if (columns[i].length() > 0) {
-					Map<String, Object> site = new HashMap<String, Object>();
-					site.put("siteName", columns[i]);
-					sites.add(site);
-				}
+			if((cp.get("shortTitle").equals(columns[1])) ) {
+				cp.put("irbId", columns[2]);
+			} else {
+				System.err.println("Collection protocol id and short title does not match: \n" + "id: " + cpId + "\nCP Short title: " + columns[1]);
+				continue;
 			}
-
-			cp.put("cpSites", sites);
+			
 			String id = cp.get("id").toString();
 			String payload = objectMapper.writeValueAsString(cp);
 
 			response = callAPI(cpApiUrl + "/" + id, payload, "PUT");
+			
+			System.out.println(response + "\n");
 		}
 
 	}
@@ -108,15 +85,4 @@ public class Updater {
 		}
 	}
 	
-	public static String getParamValue(String param) {
-		char[] tempParam = param.toCharArray();
-		
-		for(int i = 0; i < tempParam.length; i++) {
-			if(tempParam[i] == ' ') {
-				tempParam[i] = '+';
-			} 
-		}
-	
-		return new String(tempParam).replace("\"", "%22").replace("\'", "%27");
-	}
 }
