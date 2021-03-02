@@ -50,8 +50,6 @@ public class Updater {
 			String payload = objectMapper.writeValueAsString(cp);
 
 			response = callAPI(cpApiUrl + "/" + id, payload, "PUT");
-			
-			System.out.println(response + "\n");
 		}
 
 	}
