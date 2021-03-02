@@ -33,7 +33,13 @@ public class Updater {
 
 		while ((columns = reader.readNext()) != null) {
 			Integer cpId = Integer.valueOf(columns[0]);			
-			String response = callAPI(cpApiUrl + "/" + cpId, null, "GET");		
+			String response = callAPI(cpApiUrl + "/" + cpId, null, "GET");
+			
+			if(response.equals("[]")) {
+				System.out.print("Unable to find CP with id: " + cpId);
+				continue;
+			}
+			
 			Map<String, Object> cp = objectMapper.readValue(response, new TypeReference<HashMap<String, Object>>() {
 			});
 			List<Map<String, Object>> coordinatorsList = (List<Map<String, Object>>) cp.get("coordinators");
